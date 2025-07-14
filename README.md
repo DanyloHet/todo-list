@@ -5,7 +5,7 @@
 My test project for CTD React course
 The project information may be incomplete and will be updated as progress is made. 
 
-### Techologies Used()
+### Techologies Used
 1. HTML
 2. CSS3
 3. Javascrpt
