@@ -10,47 +10,43 @@ function App() {
   const [errorMessage, setErrorMessage] = useState('');
   const url = `https://api.airtable.com/v0/${import.meta.env.VITE_BASE_ID}/${import.meta.env.VITE_TABLE_NAME}`;
   const token = `Bearer ${import.meta.env.VITE_PAT}`;
+  const headers = {
+    Authorization: token,
+    'Content-Type': 'application/json',
+  };
+  const customErrors = {
+    get: 'Failed to Fetch TodoList',
+    add: 'Failed to add TODO',
+    complete: 'Reverting todo completion',
+    delete: 'Failed to delete TODO',
+    update: 'Reverting todo...',
+  };
 
   useEffect(() => {
     const fetchTodos = async () => {
       setIsLoading(true);
-      const options = {
-        method: 'GET',
-        headers: {
-          Authorization: token,
-        },
-      };
       try {
-        const resp = await fetch(url, options);
-        if (!resp.ok) {
-          throw new Error(resp.statusText);
-        }
-
-        const data = await resp.json();
-        // Handle the successful data here
-        const fetchedExamples = data.records.map((record) => {
+        const data = await sendRequest({ method: 'GET' });
+        const fetchedTodos = data.records.map((record) => {
           const todo = {
             id: record.id,
             ...record.fields,
+            isCompleted: record.fields.isCompleted ?? false,
           };
-          if (!todo.isCompleted) {
-            todo.isCompleted = false;
-          }
           return todo;
         });
-        setTodoList([...fetchedExamples]);
+        setTodoList([...fetchedTodos]);
       } catch (error) {
-        setErrorMessage(error.message);
-        console.error('Fetch error:', error.message);
+        handleError(error, customErrors.get);
       } finally {
         setIsLoading(false);
-        console.log('Fetch attempt finished.');
       }
     };
     fetchTodos();
   }, []);
 
   const addTodo = async (title) => {
+    setIsSaving(true);
     const payload = {
       records: [
         {
@@ -61,21 +57,8 @@ function App() {
         },
       ],
     };
-    const options = {
-      method: 'POST',
-      headers: {
-        Authorization: token,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(payload),
-    };
     try {
-      setIsSaving(true);
-      const resp = await fetch(url, options);
-      if (!resp.ok) {
-        throw new Error(resp.statusText);
-      }
-      const { records } = await resp.json();
+      const { records } = await sendRequest({ method: 'POST', payload });
       const { id, fields } = records[0];
       const savedTodo = {
         id,
@@ -86,8 +69,7 @@ function App() {
       }
       setTodoList([...todoList, savedTodo]);
     } catch (error) {
-      setErrorMessage(error.message);
-      console.error('Fetch error:', error.message);
+      handleError(error, customErrors.add);
     } finally {
       setIsSaving(false);
     }
@@ -115,22 +97,10 @@ function App() {
         },
       ],
     };
-    const options = {
-      method: 'PATCH',
-      headers: {
-        Authorization: token,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(payload),
-    };
     try {
-      const resp = await fetch(url, options);
-      if (!resp.ok) {
-        throw new Error(resp.statusText);
-      }
+      await sendRequest({ method: 'PATCH', payload });
     } catch (error) {
-      console.log(error);
-      setErrorMessage(`${error.message}. Reverting todo complition`);
+      handleError(error, customErrors.complete);
       const revertedTodos = todoList.map((todo) =>
         todo.id === completeTodo.id ? completeTodo : todo
       );
@@ -158,22 +128,10 @@ function App() {
         },
       ],
     };
-    const options = {
-      method: 'PATCH',
-      headers: {
-        Authorization: token,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(payload),
-    };
     try {
-      const resp = await fetch(url, options);
-      if (!resp.ok) {
-        throw new Error(resp.statusText);
-      }
+      await sendRequest({ method: 'PATCH', payload });
     } catch (error) {
-      console.log(error);
-      setErrorMessage(`${error.message}. Reverting todo...`);
+      handleError(error, customErrors.update);
       const revertedTodos = todoList.map((todo) =>
         todo.id === originalTodo.id ? originalTodo : todo
       );
@@ -183,6 +141,27 @@ function App() {
     }
   }
 
+  async function sendRequest({ method, payload = null }) {
+    const options = {
+      method,
+      headers,
+      ...(payload && method !== 'GET' && { body: JSON.stringify(payload) }),
+    };
+    const resp = await fetch(url, options);
+    if (!resp.ok) {
+      throw new Error(resp.statusText);
+    }
+    const contentType = resp.headers.get('Content-Type');
+    if (contentType && contentType.includes('application/json')) {
+      return await resp.json();
+    }
+    return null;
+  }
+
+  function handleError(error, customsg) {
+    setErrorMessage(`${error.message}. ${customsg}`);
+    console.error(error.message);
+  }
   return (
     <div>
       <h1>My Todos</h1>
