@@ -8,7 +8,7 @@ function encodeUrl({ sortField, sortDirection, queryString }) {
   const url = `https://api.airtable.com/v0/${import.meta.env.VITE_BASE_ID}/${import.meta.env.VITE_TABLE_NAME}`;
   let searchQuery = '';
   let sortQuery = `sort[0][field]=${sortField}&sort[0][direction]=${sortDirection}`;
-  if (!searchQuery.length) {
+  if (searchQuery === '') {
     searchQuery = `&filterByFormula=SEARCH("${queryString}",+title)`;
   }
   return encodeURI(`${url}?${sortQuery}&${searchQuery}`);
@@ -20,7 +20,7 @@ function App() {
   const [isSaving, setIsSaving] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [sortField, setSortField] = useState('createdTime');
-  const [sortDirection, setSortDircetion] = useState('desc');
+  const [sortDirection, setSortDirection] = useState('desc');
   const [queryString, setQueryString] = useState('');
   const token = `Bearer ${import.meta.env.VITE_PAT}`;
   const headers = {
@@ -191,7 +191,7 @@ function App() {
       <hr />
       <TodoViewForm
         sortDirection={sortDirection}
-        setSortDirection={setSortDircetion}
+        setSortDirection={setSortDirection}
         sortField={sortField}
         setSortField={setSortField}
         queryString={queryString}

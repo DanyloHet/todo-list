@@ -34,7 +34,7 @@ function TodoViewForm({
           onChange={(e) => setSortField(e.target.value)}
         >
           <option value="title">Title</option>
-          <option value="createdTime">TimeAdded</option>
+          <option value="createdTime">Time added</option>
         </select>
         <label htmlFor="sortDirection">Direction</label>
         <select
