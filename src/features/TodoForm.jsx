@@ -6,7 +6,7 @@ const StyledForm = styled.form`
   display: flex;
   gap: 1rem;
   align-items: center;
-  padding: 16px;
+  padding:16px 0px;
 `;
 
 const StyledButton = styled.button`

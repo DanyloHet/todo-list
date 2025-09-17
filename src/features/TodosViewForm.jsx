@@ -9,9 +9,9 @@ const defaultDiv = css`
 const StyledView = styled.form`
   display: flex;
   gap: 1.5rem;
-  padding: 16px;
   flex-direction:column;
-  gap: 1rem:
+  gap: 1rem;
+  padding:16px 0px;
 `;
 const StyledSearch = styled.div`
   ${defaultDiv}
