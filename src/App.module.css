@@ -3,6 +3,8 @@
     padding-left: 16px;
 }
 .errorContainer {
+  display: flex; 
+  gap: 2rem;
   border: 1px solid red;
   padding: 12px;
   background-color: #ffe6e6;
@@ -12,11 +14,10 @@
 }
 
 .dismissButton {
-  margin-top: 10px;
   background-color: transparent;
   color: red;
   border: 1px solid red;
-  padding: 6px 10px;
+  padding: 3px 5px;
   cursor: pointer;
   border-radius: 4px;
 }

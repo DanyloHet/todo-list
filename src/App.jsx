@@ -197,18 +197,15 @@ function App() {
       />
       {errorMessage && (
         <>
-          <div className={styles.errorContainer}></div>
-          <hr />
-          <p>
-            {errorMessage}
-          </p>
-          <button
-            className={styles.dismisButton}
+          <div className={styles.errorContainer}>
+            <p>{errorMessage}</p>
+            <button
+            className={styles.dismissButton}
             onClick={() => setErrorMessage('')}
           >
             Dismiss
           </button>
-          <div />
+          </div>
         </>
       )}
     </div>
