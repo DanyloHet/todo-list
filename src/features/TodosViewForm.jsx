@@ -1,4 +1,32 @@
 import { useState, useEffect } from 'react';
+import styled, { css } from 'styled-components';
+const defaultDiv = css`
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+`;
+
+const StyledView = styled.form`
+  display: flex;
+  gap: 1.5rem;
+  padding: 16px;
+  flex-direction:column;
+  gap: 1rem:
+`;
+const StyledSearch = styled.div`
+  ${defaultDiv}
+`;
+const StyledSortBy = styled.div`
+  ${defaultDiv}
+`;
+const StyledSelect = styled.select`
+  border-radius: 4px;
+  color: #1c1e21;
+  font-size: 14px;
+  font-weight: 400;
+  height: 30px;
+  line-height: 20px;
+`;
 
 function TodoViewForm({
   sortDirection,
@@ -21,8 +49,8 @@ function TodoViewForm({
     event.preventDefault();
   };
   return (
-    <form onSubmit={(e) => preventRefresh(e)}>
-      <div>
+    <StyledView onSubmit={(e) => preventRefresh(e)}>
+      <StyledSearch className="defaultDiv">
         <label>Search Todos</label>
         <input
           type="text"
@@ -37,29 +65,29 @@ function TodoViewForm({
         >
           Clear
         </button>
-      </div>
-      <div>
+      </StyledSearch>
+      <StyledSortBy className="defaultDiv">
         <label htmlFor="sortField">SortBy</label>
-        <select
+        <StyledSelect
           value={sortField}
           onChange={(e) => setSortField(e.target.value)}
         >
           <option value="title">Title</option>
           <option value="createdTime">Time added</option>
-        </select>
+        </StyledSelect>
         <label htmlFor="sortDirection">Direction</label>
-        <select
+        <StyledSelect
           value={sortDirection}
           onChange={(e) => setSortDirection(e.target.value)}
         >
           <option value="asc">Ascending</option>
           <option value="desc">Descending</option>
-        </select>
+        </StyledSelect>
         {/* <button type="submit" disabled={!workingTodoTitle.length || isSaving}>
           {isSaving ? 'Saving...' : 'Add Todo'}
         </button> */}
-      </div>
-    </form>
+      </StyledSortBy>
+    </StyledView>
   );
 }
 

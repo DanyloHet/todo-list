@@ -1,0 +1,28 @@
+/* App.module.css */
+.homeTitle {
+    padding-left: 16px;
+}
+.errorContainer {
+  border: 1px solid red;
+  padding: 12px;
+  background-color: #ffe6e6;
+  color: darkred;
+  margin: 20px 0;
+  border-radius: 6px;
+}
+
+.dismissButton {
+  margin-top: 10px;
+  background-color: transparent;
+  color: red;
+  border: 1px solid red;
+  padding: 6px 10px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+hr {
+  border: none;
+  border-top: 1px solid #ccc;
+  margin: 10px 0;
+}
