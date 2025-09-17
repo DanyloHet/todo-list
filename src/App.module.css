@@ -1,6 +1,6 @@
 /* App.module.css */
 .homeTitle {
-    padding-left: 16px;
+    text-align: center;
 }
 .errorContainer {
   display: flex; 
