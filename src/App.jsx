@@ -1,4 +1,5 @@
 import './App.css';
+import styles from './App.module.css';
 import { useState, useEffect, useCallback } from 'react';
 import TodoList from './features/TodoList/TodoList';
 import TodoForm from './features/TodoForm';
@@ -177,7 +178,7 @@ function App() {
   }
   return (
     <div>
-      <h1>My Todos</h1>
+      <h1 className={styles.homeTitle}>My Todos</h1>
       <TodoForm onAddTodo={addTodo} isSaving={isSaving} />
       <TodoList
         isLoading={isLoading}
@@ -196,9 +197,15 @@ function App() {
       />
       {errorMessage && (
         <>
-          <hr />
-          <p>{errorMessage}</p>
-          <button onClick={() => setErrorMessage('')}>Dismiss</button>
+          <div className={styles.errorContainer}>
+            <p>{errorMessage}</p>
+            <button
+            className={styles.dismissButton}
+            onClick={() => setErrorMessage('')}
+          >
+            Dismiss
+          </button>
+          </div>
         </>
       )}
     </div>

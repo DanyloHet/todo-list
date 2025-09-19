@@ -1,4 +1,5 @@
 import TodoListItem from './TodoListItem';
+import styles from '../../TodoList.module.css';
 
 function TodoList({ isLoading, todoList, onCompleteTodo, onUpdateTodo }) {
   const filteredTodos = todoList.filter((todo) => !todo.isCompleted);
@@ -6,11 +7,11 @@ function TodoList({ isLoading, todoList, onCompleteTodo, onUpdateTodo }) {
   return (
     <>
       {isLoading ? (
-        <p>Todo list is loading...</p>
+        <p className={styles.staticText}>Todo list is loading...</p>
       ) : !filteredTodos.length ? (
-        <p>Add a todo above to get started</p>
+        <p className={styles.staticText}>Add a todo above to get started</p>
       ) : (
-        <ul>
+        <ul className={styles.todoList}>
           {filteredTodos.map((todo) => (
             <TodoListItem
               key={todo.id}

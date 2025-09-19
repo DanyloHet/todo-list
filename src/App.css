@@ -1,0 +1,31 @@
+/* App.css */
+body, #root {
+  display: flex;
+  flex-direction: column;
+  justify-self: center;
+  font-family: 'Arial', sans-serif;
+  background-color: #f4f4f9;
+  margin: 0;
+  padding: 0;
+}
+
+h1, h2, h3 {
+  font-family: 'Segoe UI', sans-serif;
+}
+
+button {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 6px;
+  background-color: #0866ff;
+  color: white;
+  cursor: pointer;
+}
+button :hover { background-color: #4267b2;
+}
+
+input[type="text"] {
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
