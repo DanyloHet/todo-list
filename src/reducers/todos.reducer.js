@@ -48,7 +48,10 @@ export function reducer(state = initialState, action) {
     case actions.addTodo:
       return {
         ...state,
-        todoList: [...state.todoList, { ...action.savedTodo, isCompleted: false }],
+        todoList: [
+          ...state.todoList,
+          { ...action.savedTodo, isCompleted: false },
+        ],
         isSaving: false,
       };
 
@@ -59,7 +62,9 @@ export function reducer(state = initialState, action) {
       return {
         ...state,
         todoList: state.todoList.map((todo) =>
-          todo.id === action.editedTodo.id ? { ...todo, ...action.editedTodo } : todo
+          todo.id === action.editedTodo.id
+            ? { ...todo, ...action.editedTodo }
+            : todo
         ),
       };
 
@@ -74,9 +79,7 @@ export function reducer(state = initialState, action) {
     case actions.revertTodo:
       return {
         ...state,
-        todoList: state.todoList.map((todo) =>
-          todo.id === action.originalTodo.id ? { ...action.originalTodo } : todo
-        ),
+        todoList: action.revertedTodos,
       };
 
     case actions.clearError:

@@ -108,7 +108,7 @@ function App() {
       const revertedTodos = todoList.map((todo) =>
         todo.id === completeTodo.id ? completeTodo : todo
       );
-      dispatch({ type: todoActions.revertTodo, originalTodo: revertedTodos });
+      dispatch({ type: todoActions.revertTodo, revertedTodos });
     } finally {
       dispatch({ type: todoActions.endRequest });
     }
@@ -142,7 +142,7 @@ function App() {
       const revertedTodos = todoList.map((todo) =>
         todo.id === originalTodo.id ? originalTodo : todo
       );
-      dispatch({ type: todoActions.revertTodo, originalTodo: revertedTodos });
+      dispatch({ type: todoActions.revertTodo, revertedTodos });
     } finally {
       dispatch({ type: todoActions.endRequest });
     }
