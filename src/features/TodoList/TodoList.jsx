@@ -7,7 +7,7 @@ function TodoList({ isLoading, todoList, onCompleteTodo, onUpdateTodo }) {
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
 
-  const itemsPerPage = 5;
+  const itemsPerPage = 15;
 
   // Get page param from URL
   const currentPage = parseInt(searchParams.get('page') || '1', 10);
