@@ -1,5 +1,4 @@
 import './App.css';
-import styles from './css-modules/App.module.css';
 import { useReducer, useEffect, useCallback, useState } from 'react';
 import { Routes, Route, useLocation } from 'react-router';
 
@@ -17,6 +16,23 @@ import {
 function App() {
   const [todoState, dispatch] = useReducer(todosReducer, initialTodosState);
   const { todoList, isLoading, isSaving, errorMessage, sortField, sortDirection, queryString } = todoState;
+  const [pageTitle, setPageTitle] = useState('Todo List');
+  const location = useLocation();
+
+  // Set dynamic title based on route
+  useEffect(() => {
+    switch (location.pathname) {
+      case '/':
+        setPageTitle('Todo List');
+        break;
+      case '/about':
+        setPageTitle('About');
+        break;
+      default:
+        setPageTitle('Not Found');
+        break;
+    }
+  }, [location]);
 
   const token = `Bearer ${import.meta.env.VITE_PAT}`;
   const headers = {
@@ -172,7 +188,7 @@ function App() {
 
   return (
     <div>
-      <Header/>
+      <Header title={pageTitle}/>
       <Routes>
         <Route
           path="/"

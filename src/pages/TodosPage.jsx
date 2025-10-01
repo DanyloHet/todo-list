@@ -1,6 +1,7 @@
 import TodoForm from '../features/TodoForm';
 import TodoList from '../features/TodoList/TodoList';
 import TodosViewForm from '../features/TodosViewForm';
+import styles from '../css-modules/TodosPage.module.css';
 
 function TodosPage({
   isLoading,
@@ -14,7 +15,7 @@ function TodosPage({
   queryString,
   dispatch,
   todoActions,
-  errorMessage
+  errorMessage,
 }) {
   return (
     <div>
@@ -28,16 +29,27 @@ function TodosPage({
       <hr />
       <TodosViewForm
         sortDirection={sortDirection}
-        setSortDirection={(value) => dispatch({ type: todoActions.setSortDirection, value })}
+        setSortDirection={(value) =>
+          dispatch({ type: todoActions.setSortDirection, value })
+        }
         sortField={sortField}
-        setSortField={(value) => dispatch({ type: todoActions.setSortField, value })}
+        setSortField={(value) =>
+          dispatch({ type: todoActions.setSortField, value })
+        }
         queryString={queryString}
-        setQueryString={(value) => dispatch({ type: todoActions.setQueryString, value })}
+        setQueryString={(value) =>
+          dispatch({ type: todoActions.setQueryString, value })
+        }
       />
       {errorMessage && (
-        <div className="error">
+        <div className={styles.errorContainer}>
           <p>{errorMessage}</p>
-          <button onClick={() => dispatch({ type: todoActions.clearError })}>Dismiss</button>
+          <button
+            className={styles.dismissButton}
+            onClick={() => dispatch({ type: todoActions.clearError })}
+          >
+            Dismiss
+          </button>
         </div>
       )}
     </div>
