@@ -1,7 +1,4 @@
 /* App.module.css */
-.homeTitle {
-    text-align: center;
-}
 .errorContainer {
   display: flex; 
   gap: 2rem;
