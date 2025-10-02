@@ -1,9 +1,12 @@
 import './App.css';
-import styles from './App.module.css';
-import {useReducer, useEffect, useCallback } from 'react';
-import TodoList from './features/TodoList/TodoList';
-import TodoForm from './features/TodoForm';
-import TodoViewForm from './features/TodosViewForm';
+import { useReducer, useEffect, useCallback, useState } from 'react';
+import { Routes, Route, useLocation } from 'react-router';
+
+import Header from './shared/Header';
+import TodosPage from './pages/TodosPage';
+import About from './pages/About';
+import NotFound from './pages/NotFound';
+
 import {
   reducer as todosReducer,
   actions as todoActions,
@@ -13,12 +16,30 @@ import {
 function App() {
   const [todoState, dispatch] = useReducer(todosReducer, initialTodosState);
   const { todoList, isLoading, isSaving, errorMessage, sortField, sortDirection, queryString } = todoState;
+  const [pageTitle, setPageTitle] = useState('Todo List');
+  const location = useLocation();
+
+  // Set dynamic title based on route
+  useEffect(() => {
+    switch (location.pathname) {
+      case '/':
+        setPageTitle('Todo List');
+        break;
+      case '/about':
+        setPageTitle('About');
+        break;
+      default:
+        setPageTitle('Not Found');
+        break;
+    }
+  }, [location]);
 
   const token = `Bearer ${import.meta.env.VITE_PAT}`;
   const headers = {
     Authorization: token,
     'Content-Type': 'application/json',
   };
+
   const customErrors = {
     get: 'Failed to Fetch TodoList',
     add: 'Failed to add TODO',
@@ -56,16 +77,37 @@ function App() {
     fetchTodos();
   }, [sortField, sortDirection, queryString]);
 
+  const sendRequest = async ({ method, payload = null }) => {
+    const options = {
+      method,
+      headers,
+      ...(payload && method !== 'GET' && { body: JSON.stringify(payload) }),
+    };
+    const resp = await fetch(encodeUrl(), options);
+    if (!resp.ok) throw new Error(resp.statusText);
+
+    const contentType = resp.headers.get('Content-Type');
+    if (contentType && contentType.includes('application/json')) {
+      return await resp.json();
+    }
+    return null;
+  };
+
+  const handleError = (error, customMsg) => {
+    dispatch({
+      type: todoActions.setLoadError,
+      error: { message: `${error.message}. ${customMsg}` },
+    });
+    console.error(error.message);
+  };
+
   const addTodo = async (title) => {
     dispatch({ type: todoActions.startRequest });
 
     const payload = {
       records: [
         {
-          fields: {
-            title: title,
-            isCompleted: false,
-          },
+          fields: { title, isCompleted: false },
         },
       ],
     };
@@ -86,7 +128,7 @@ function App() {
       todo.id === id ? { ...todo, isCompleted: !todo.isCompleted } : todo
     );
 
-    dispatch({ type: todoActions.updateTodo, editedTodo: updatedTodos.find((todo) => todo.id === id) });
+    dispatch({ type: todoActions.updateTodo, editedTodo: updatedTodos.find((t) => t.id === id) });
     dispatch({ type: todoActions.startRequest });
 
     const payload = {
@@ -116,11 +158,7 @@ function App() {
 
   const updateTodo = async (editedTodo) => {
     const originalTodo = todoList.find((todo) => todo.id === editedTodo.id);
-    const updatedTodos = todoList.map((todo) =>
-      todo.id === editedTodo.id ? editedTodo : todo
-    );
     dispatch({ type: todoActions.updateTodo, editedTodo });
-
     dispatch({ type: todoActions.startRequest });
 
     const payload = {
@@ -148,60 +186,35 @@ function App() {
     }
   };
 
-  const sendRequest = async ({ method, payload = null }) => {
-    const options = {
-      method,
-      headers,
-      ...(payload && method !== 'GET' && { body: JSON.stringify(payload) }),
-    };
-    const resp = await fetch(encodeUrl(), options);
-    if (!resp.ok) {
-      throw new Error(resp.statusText);
-    }
-    const contentType = resp.headers.get('Content-Type');
-    if (contentType && contentType.includes('application/json')) {
-      return await resp.json();
-    }
-    return null;
-  };
-
-  const handleError = (error, customsg) => {
-    dispatch({ type: todoActions.setLoadError, error: { message: `${error.message}. ${customsg}` } });
-    console.error(error.message);
-  };
-
   return (
     <div>
-      <h1 className={styles.homeTitle}>My Todos</h1>
-      <TodoForm onAddTodo={addTodo} isSaving={isSaving} />
-      <TodoList
-        isLoading={isLoading}
-        todoList={todoList}
-        onCompleteTodo={completeTodo}
-        onUpdateTodo={updateTodo}
-      />
-      <hr />
-      <TodoViewForm
-        sortDirection={sortDirection}
-        setSortDirection={(value) => dispatch({ type: todoActions.setSortDirection, value })}
-        sortField={sortField}
-        setSortField={(value) => dispatch({ type: todoActions.setSortField, value })}
-        queryString={queryString}
-        setQueryString={(value) => dispatch({ type: todoActions.setQueryString, value })}
-      />
-      {errorMessage && (
-        <div className={styles.errorContainer}>
-          <p>{errorMessage}</p>
-          <button
-            className={styles.dismissButton}
-            onClick={() => dispatch({ type: todoActions.clearError })}
-          >
-            Dismiss
-          </button>
-        </div>
-      )}
+      <Header title={pageTitle}/>
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <TodosPage
+              isLoading={isLoading}
+              isSaving={isSaving}
+              todoList={todoList}
+              addTodo={addTodo}
+              completeTodo={completeTodo}
+              updateTodo={updateTodo}
+              sortField={sortField}
+              sortDirection={sortDirection}
+              queryString={queryString}
+              dispatch={dispatch}
+              todoActions={todoActions}
+              errorMessage={errorMessage}
+            />
+          }
+        />
+        <Route path="/about" element={<About />} />
+        <Route path="*" element={<NotFound />} />
+      </Routes>
     </div>
   );
 }
 
 export default App;
+

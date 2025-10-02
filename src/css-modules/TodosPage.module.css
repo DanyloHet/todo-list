@@ -1,7 +1,4 @@
-/* App.module.css */
-.homeTitle {
-    text-align: center;
-}
+/* TodosPage.module.css */
 .errorContainer {
   display: flex; 
   gap: 2rem;
